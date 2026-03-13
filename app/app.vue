@@ -1,24 +1,9 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')
-const kanban = useKanbanStore()
-
-const showAddModal = ref(false)
-const newColumnTitle = ref('')
-
-watch(showAddModal, (open) => {
-  if (!open) newColumnTitle.value = ''
-})
 
 function toggleColorMode() {
   colorMode.preference = isDark.value ? 'light' : 'dark'
-}
-
-function addColumn() {
-  const title = newColumnTitle.value.trim()
-  if (!title) return
-  kanban.addColumn(title)
-  showAddModal.value = false
 }
 </script>
 
@@ -35,7 +20,6 @@ function addColumn() {
           <UButton color="gray" variant="soft" @click="toggleColorMode">
             {{ isDark ? 'Light Mode' : 'Dark Mode' }}
           </UButton>
-          <UButton color="gray" variant="soft" @click="showAddModal = true">Add column</UButton>
           <UButton color="gray" variant="soft">Filter</UButton>
           <UButton>New Card</UButton>
         </div>
@@ -43,29 +27,5 @@ function addColumn() {
 
       <KanbanBoard />
     </div>
-
-    <UModal v-model="showAddModal">
-      <UCard>
-        <template #header>
-          <div class="font-semibold">Add column</div>
-        </template>
-
-        <div class="grid gap-3">
-          <UInput
-            v-model="newColumnTitle"
-            placeholder="e.g. Backlog"
-            @keyup.enter="addColumn"
-          />
-          <div class="flex items-center justify-end gap-2">
-            <UButton color="gray" variant="soft" @click="showAddModal = false">
-              Cancel
-            </UButton>
-            <UButton :disabled="!newColumnTitle.trim()" @click="addColumn">
-              Add column
-            </UButton>
-          </div>
-        </div>
-      </UCard>
-    </UModal>
   </div>
 </template>
